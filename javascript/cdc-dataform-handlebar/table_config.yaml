@@ -1,0 +1,85 @@
+defaultProject: prj-ts-p-etl-infra-45d9
+defaultLocation: asia-southeast1
+defaultDataset: dataform
+defaultAssertionDataset: dataform_assertions
+vars:
+    tableConf: |
+        {
+            "replica_partition_col":"created_at",
+            "changelog_partition_col":"_PARTITIONTIME",
+            "primary_key":"id,created_at",
+            "order_key":"source_ts_ms,lsn",
+            "unit_time":"HOUR",
+            "interval_unit":"1",
+            "tables":[
+                {
+                    "table_name":"messages",
+                    "transforms":{
+                        "recipient_details":{
+                        "trans":"{{ jsonTrans jsonTransform.field (validateStringField \"holeField\" (encryptTrans (legacyPhoneNumberTrans \"holeField\"))) }}",
+                        "params":{
+                            "jsonTransform":{
+                                "field":"recipient_details",
+                                "paths":"['$.phone_number']"
+                            }
+                        }
+                        },
+                        "message_metadata":{
+                        "trans":"{{ jsonTrans jsonTransform.field (validateStringField \"holeField\" (encryptTrans (legacyPhoneNumberTrans \"holeField\"))) }}",
+                        "params":{
+                            "jsonTransform":{
+                                "field":"message_metadata",
+                                "paths":"['$.call_assignment.phone_number','$.call_assignment.full_call_assignment.phone','$.call_assignment.full_call_assignment.ref_phone_1','$.call_assignment.full_call_assignment.ref_phone_2','$.temporary_call_assignment.call_assignment_str.phone','$.temporary_call_assignment.call_assignment_str.ref_phone_1','$.temporary_call_assignment.call_assignment_str.ref_phone_2','$.call_assignment.full_call_assignment.reg_phone','$.temporary_call_assignment.call_assignment_str.reg_phone']"
+                            }
+                        }
+                        },
+                        "delivery_status_metadata":{
+                        "trans":"{{ jsonTrans jsonTransform.field (validateStringField \"holeField\" (encryptTrans (legacyPhoneNumberTrans \"holeField\"))) }}",
+                        "params":{
+                            "jsonTransform":{
+                                "field":"delivery_status_metadata",
+                                "paths":"['$.number']"
+                            }
+                        }
+                        },
+                        "retry_attempts":{
+                        "trans":"IF(retry_attempts IS NULL, delivery_attempts, retry_attempts)"
+                        }
+                    }
+                },
+                {
+                    "table_name":"raw_messages",
+                    "transforms":{
+                        "recipient_details":{
+                        "trans":"{{ jsonTrans jsonTransform.field (validateStringField \"holeField\" (encryptTrans (legacyPhoneNumberTrans \"holeField\"))) }}",
+                        "params":{
+                            "jsonTransform":{
+                                "field":"recipient_details",
+                                "paths":"['$.phone_number']"
+                            }
+                        }
+                        }
+                    },
+                    "ignore_deleted": true
+                },
+                {
+                    "table_name":"templates",
+                    "transforms":{
+                        "created_at":{
+                        "trans":"TIMESTAMP_MICROS(created_at)"
+                        },
+                        "updated_at":{
+                        "trans":"TIMESTAMP_MICROS(updated_at)"
+                        }
+                    }
+                },
+                {
+                    "table_name": "requests",
+                    "filter": "service != 'read_id_card_info'",
+                    "toast_field": "'process_result', 'more_details'",
+                    "ignore_delete": true
+                }
+            ]
+        }
+    changelogDataset: c_collin_messaging_vn_v1
+    replicaDataset: collin_messaging_vn_v1
