@@ -1,0 +1,194 @@
+defaultProject: prj-ts-p-etl-infra-45d9
+defaultLocation: asia-southeast1
+defaultDataset: dataform
+defaultAssertionDataset: dataform_assertions
+vars:
+    tableConf: |
+        {
+            "replica_partition_col": "created_at",
+            "changelog_partition_col": "_PARTITIONTIME",
+            "primary_key": "id,created_at",
+            "order_key": "source_ts_ms,file,pos",
+            "unit_time": "HOUR",
+            "interval_unit": "1",
+            "tables": [
+                {
+                    "table_name": "application_documents"
+                },
+                {
+                    "table_name": "application_evaluations",
+                    "ignore_delete": true,
+                    "transforms": {
+                        "evaluation_path": "{{ applyJson \"evaluation_path\" (encryptPn \"__json_value__\") \"['$..lead_phone_number','$..reference_phone1','$..reference_phone2','$..referencePhone1','$..referencePhone2','$..referencePhone3','$..mobilePhone','$..ref1MobilePhone','$..ref2MobilePhone','$..companyPhone','$..spousePhone','$..phone_number','$..zaloPhoneNumber','$..zalo_phone_number','$..metadata[?(@.field==\\\"phone_number\\\")].value']\" (encryptNId \"__json_value__\") \"['$..idCard','$..idCard1','$..idCard2','$..oldIdCard','$..familyOwnerIdCard','$..spouseIdCard','$..id_card_1','$..id_card_2','$..national_id','$..id_number','$..other_id_number','$..old_id_number','$..cif_id_number','$..TTKH.GiayToKhac','$..best_search_nid','$..TTKH[\\\"CMND-HC\\\"]','$..metadata[?(@.field==\\\"national_id\\\")].value','$..duplicate_nids[*]']\" }}",
+                        "application_matrix": "{{ applyJson \"application_matrix\" (encryptPn \"__json_value__\") \"['$..lead_phone_number','$..reference_phone1','$..reference_phone2','$..referencePhone1','$..referencePhone2','$..referencePhone3','$..mobilePhone','$..ref1MobilePhone','$..ref2MobilePhone','$..companyPhone','$..spousePhone','$..phone_number','$..zaloPhoneNumber','$..zalo_phone_number','$..metadata[?(@.field==\\\"phone_number\\\")].value']\" (encryptNId \"__json_value__\") \"['$..idCard','$..idCard1','$..idCard2','$..oldIdCard','$..familyOwnerIdCard','$..spouseIdCard','$..id_card_1','$..id_card_2','$..national_id','$..id_number','$..other_id_number','$..old_id_number','$..cif_id_number','$..TTKH.GiayToKhac','$..best_search_nid','$..TTKH[\\\"CMND-HC\\\"]','$..metadata[?(@.field==\\\"national_id\\\")].value','$..duplicate_nids[*]']\" }}"
+                    }
+                },
+                {
+                    "table_name": "application_services",
+                    "ignore_delete": true,
+                    "transforms": {
+                        "input_data": "{{ applyJson \"input_data\" (encryptPn \"__json_value__\") \"['$..lead_phone_number','$..phone_number','$..zalo_phone_number','$..reference_phone1','$..reference_phone2','$..referencePhone1','$..referencePhone2','$..metadata[?(@.field==\\\"phone_number\\\")].value']\" (encryptNId \"__json_value__\") \"['$..national_id','$..national_id_other','$..id_number','$..old_id_number','$..cif_id_number','$..other_id_number','$..idCard','$..oldIDCard','$..card_info[?(@.field==\\\"id\\\" || @.field==\\\"id_1\\\")].value','$..metadata[?(@.field==\\\"national_id\\\")].value']\" }}",
+                        "raw_data": "{{ applyJson \"raw_data\" (encryptPn \"__json_value__\") \"['$..metadata[?(@.field==\\\"phone_number\\\")].value']\" (encryptNId \"__json_value__\") \"['$..idCard1','$..idCard2','$..TTKH[\\\"CMND-HC\\\"]','$..TTKH.GiayToKhac','$..metadata[?(@.field==\\\"national_id\\\")].value']\" }}",
+                        "result_data": "{{ encryptNIdJson \"result_data\" \"['$..id_card_1','$..id_card_2','$..idCard','$..national_id_other','$..cif_id_number']\" }}"
+                    }
+                },
+                {
+                    "table_name": "application_traces"
+                },
+                {
+                    "table_name": "applications",
+                    "transforms": {
+                        "lead_phone_number": "{{ encryptPn \"lead_phone_number\" }}",
+                        "id_number": "{{ encryptNId \"id_number\" }}",
+                        "other_id_number": "{{ encryptNId \"other_id_number\" }}",
+                        "lead_collected_data": "{{ applyJson \"lead_collected_data\" (encryptPn \"__json_value__\") \"['$..ref1MobilePhone','$..ref2MobilePhone','$..mobilePhone','$..phone_number']\" (encryptNId \"__json_value__\") \"['$..ocr_id_number','$..id_number','$.add_infor_1','$.add_infor_2','$.add_infor_3']\" }}",
+                        "form_data": "{{ applyJson \"form_data\" (encryptPn \"__json_value__\") \"['$..phoneNumber','$..refCode','$..referencePhone1','$..referencePhone2','$..referencePhone3','$..companyPhone','$..spousePhone','$..zaloPhoneNumber','$..ref1MobilePhone','$..ref2MobilePhone']\" (encryptNId \"__json_value__\") \"['$..idCard','$..oldIdCard','$..familyDeputyIDCard','$..partnerId','$..oldIDCard','$..spouseIdCard','$..familyOwnerIDCard','$..OldIdCard','$.mismatchInfo[?(@.field_name==\\\"personalInfo.idCard\\\")].old_value','$.mismatchInfo[?(@.field_name==\\\"personalInfo.idCard\\\")].new_value']\" }}"
+                    }
+                },
+                {
+                    "table_name": "browsers",
+                    "ignore_delete": true
+                },
+                {
+                    "table_name": "campaigns"
+                },
+                {
+                    "table_name": "card_statuses"
+                },
+                {
+                    "table_name": "change_credit_limit_histories"
+                },
+                {
+                    "table_name": "change_histories"
+                },
+                {
+                    "primary_key": "id_bin,created_at",
+                    "table_name": "communication_call_events",
+                    "transforms": {
+                        "data": "{{ applyJson \"data\" (encryptPn \"__json_value__\") \"['$..phone_number','$..hotline','$..phone']\" }}"
+                    }
+                },
+                {
+                    "primary_key": "id_bin,created_at",
+                    "table_name": "communication_call_requests"
+                },
+                {
+                    "table_name": "credit_assignments"
+                },
+                {
+                    "table_name": "dispatch_events"
+                },
+                {
+                    "table_name": "ekyc_faces",
+                    "ignore_delete": true,
+                    "transforms": {
+                        "search_face_result": "{{ applyJson \"search_face_result\" (encryptPn \"__json_value__\") \"['$..phone_number','$..metadata[?(@.field==\\\"phone_number\\\")].value']\" (encryptNId \"__json_value__\") \"['$..id_number','$..metadata[?(@.field==\\\"national_id\\\")].value']\" }}"
+                    }
+                },
+                {
+                    "table_name": "ekyc_nfcs"
+                },
+                {
+                    "table_name": "ekyc_ocrs",
+                    "ignore_delete": true,
+                    "transforms": {
+                        "id_number": "{{ encryptNId \"id_number\" }}",
+                        "card_info": "{{ encryptNIdJson \"card_info\" \"['$..id_number','$..other_id_number','$.card_info[?(@.field==\\\"id\\\")].value']\" }}",
+                        "qr_code": "{{ applyJson \"qr_code\" (applySplitStr \"__json_value__\" (encryptNId \"__splited__\") \"0, 1\") \"['$.result']\" }}",
+                        "search_face_result": "{{ applyJson \"search_face_result\" (encryptPn \"__json_value__\") \"['$..phone_number']\" (encryptNId \"__json_value__\") \"['$..id_number']\" }}"
+                    }
+                },
+                {
+                    "table_name": "esigns",
+                    "transforms": {
+                        "filled_fields": "{{ applyJson \"filled_fields\" (encryptPn \"__json_value__\") \"['$..phone_number','$[\\\"form_data.contactInfo.referencePhone1\\\"]','$[\\\"form_data.contactInfo.referencePhone2\\\"]','$[\\\"form_data.referenceInfo.referencePhone1\\\"]','$[\\\"form_data.referenceInfo.referencePhone2\\\"]','$[\\\"form_data.personalInfo.phoneNumber\\\"]','$[\\\"form_data.contactInfo.companyPhone\\\"]','$[\\\"form_data_lender_code.contactInfo.referencePhone1\\\"]','$[\\\"form_data_lender_code.contactInfo.referencePhone2\\\"]','$[\\\"form_data_lender_code.referenceInfo.referencePhone1\\\"]','$[\\\"form_data_lender_code.referenceInfo.referencePhone2\\\"]','$[\\\"form_data_lender_code.personalInfo.phoneNumber\\\"]','$[\\\"form_data_lender_code.contactInfo.companyPhone\\\"]']\" (encryptNId \"__json_value__\") \"['$..id_number','$[\\\"form_data.personalInfo.idCard\\\"]','$[\\\"form_data.personalInfo.oldIDCard\\\"]','$[\\\"form_data.identityInfo.idCard\\\"]','$[\\\"form_data.identityInfo.oldIdCard\\\"]','$[\\\"form_data_lender_code.personalInfo.idCard\\\"]','$[\\\"form_data_lender_code.personalInfo.oldIDCard\\\"]','$[\\\"form_data_lender_code.identityInfo.idCard\\\"]','$[\\\"form_data_lender_code.identityInfo.oldIdCard\\\"]']\" }}"
+                    }
+                },
+                {
+                    "table_name": "favn_application_services",
+                    "ignore_delete": true,
+                    "transforms": {
+                        "input_data": "{{ applyJson \"input_data\" (encryptPn \"__json_value__\") \"['$..lead_phone_number','$..reference_phone1','$..reference_phone2','$..zalo_phone_number','$..frequent_contacts[*]','$..mobilePhone','$..phone_number','$..ref1MobilePhone','$..requested_msisdn','$..ref2MobilePhone']\" (encryptNId \"__json_value__\") \"['$..id_value','$..id_number','$..partnerId','$..ocr_id_number','$..other_id_number','$..old_id_number','$..cif_id_number','$..id_numbers[?(@.id_type==\\\"national_id\\\" || @.id_type==\\\"national_id.old\\\")].id_value','$..card_info[?(@.field==\\\"id\\\" || @.field==\\\"id_1\\\")].value','$..add_infor_1','$..add_infor_2','$..add_infor_3']\" }}",
+                        "aggregated_data": "{{ encryptNIdJson \"aggregated_data\" \"['$.id_card_1','$.id_card_2','$.cif_id_number']\" }}",
+                        "result_data": "{{ applyJson \"result_data\" (encryptPn \"__json_value__\") \"['$..mobile','$..phone_number']\" (encryptNId \"__json_value__\") \"['$..TTKH[\\\"CMND-HC\\\"]','$..id_value','$..idCardNumber','$..TTKH.GiayToKhac','$..idCard','$..cif_id_number','$..id_card_number','$..idCard1','$..idCard2','$..id_number']\" }}"
+                    }
+                },
+                {
+                    "table_name": "feedbacks"
+                },
+                {
+                    "table_name": "form_histories",
+                    "ignore_delete": true,
+                    "transforms": {
+                        "mismatch": "{{ encryptNIdJson \"mismatch\" \"['$..idCard','$..oldIdCard']\" }}",
+                        "old_data": "{{ encryptNIdJson \"old_data\" \"['$..idCard','$..oldIdCard']\" }}"
+                    }
+                },
+                {
+                    "table_name": "hit_profiles",
+                    "transforms": {
+                        "input_value": "CASE WHEN input_type = 'phone_number' THEN {{ encryptPn \"input_value\" }} WHEN input_type = 'id_values' THEN {{ encryptNId \"input_value\" }} ELSE input_value END"
+                    }
+                },
+                {
+                    "table_name": "id_card_tamperings",
+                    "transforms": {
+                        "id_number": "{{ encryptNId \"id_number\" }}"
+                    }
+                },
+                {
+                    "table_name": "lender_configs"
+                },
+                {
+                    "table_name": "lender_partners"
+                },
+                {
+                    "table_name": "locations"
+                },
+                {
+                    "table_name": "metadata"
+                },
+                {
+                    "table_name": "otp_sms_requests",
+                    "transforms": {
+                        "phone_number": "{{ encryptPn \"phone_number\" }}"
+                    }
+                },
+                {
+                    "table_name": "partner_apps"
+                },
+                {
+                    "table_name": "profiles"
+                },
+                {
+                    "table_name": "registrations",
+                    "transforms": {
+                        "phone_number": "{{ encryptPn \"phone_number\" }}",
+                        "collected_data": "{{ applyJson \"collected_data\" (encryptPn \"__json_value__\") \"['$..phone_number','$..mobilePhone','$..ref1MobilePhone','$..ref2MobilePhone']\" (encryptNId \"__json_value__\") \"['$..partnerId','$.add_infor_1','$.add_infor_2','$.add_infor_3','$..id_number','$..idCardNumberOther','$..idCard']\" }}"
+                    }
+                },
+                {
+                    "table_name": "requests",
+                    "transforms": {
+                        "input_data": "{{ applyJson \"input_data\" (encryptPn \"__json_value__\") \"['$.phone_number']\" (encryptNId \"__json_value__\") \"['$.id_values[*]']\" }}"
+                    }
+                },
+                {
+                    "table_name": "risk_grades"
+                },
+                {
+                    "table_name": "sent_applications",
+                    "ignore_delete": true
+                },
+                {
+                    "table_name": "store_detections",
+                    "primary_key": "request_id,created_at"
+                },
+                {
+                    "table_name": "trackings",
+                    "toast_field": ["process_result", "more_details"]
+                }
+            ]
+        }
+    changelogDataset: c_dop_vn_v1
+    replicaDataset: dop_vn_v1
