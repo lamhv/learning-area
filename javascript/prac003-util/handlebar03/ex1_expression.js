@@ -116,7 +116,7 @@ function createHelper2() {
 
 // register a helper function with two parameters
 function createHelper3() {
-    Handlebars.registerHelper("link", function(text, url) {
+    .registerHelper("link", function(text, url) {
         var url = Handlebars.escapeExpression(url),
             text = Handlebars.escapeExpression(text)
             
